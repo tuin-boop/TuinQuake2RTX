@@ -1,5 +1,7 @@
 # TuinRTX
 
+![TuinRTX path-traced classic Quake II interior](doc/tuinrtx-hero.png)
+
 TuinRTX is a custom recompilation of NVIDIA Quake II RTX 1.8.1. It preserves
 the crisp original Quake II artwork, models, HUD, gameplay, and atmosphere by
 default while using the Quake II RTX path tracer for dynamic sunlight, bounced
