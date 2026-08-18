@@ -59,3 +59,4 @@ distribution/build/
 !distribution/art/*.jpg
 !distribution/TuinRTX.Installer/art/
 !distribution/TuinRTX.Installer/art/*.jpg
+!doc/tuinrtx-hero.png
