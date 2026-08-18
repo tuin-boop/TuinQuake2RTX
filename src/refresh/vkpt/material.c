@@ -36,6 +36,10 @@ static pbr_material_t r_map_materials[MAX_PBR_MATERIALS];
 static uint32_t num_global_materials = 0;
 static uint32_t num_map_materials = 0;
 
+static cvar_t* rt_classic;
+static cvar_t* rt_classic_materials;
+static cvar_t* rt_original_textures;
+
 #define RMATERIALS_HASH 256
 static list_t r_materialsHash[RMATERIALS_HASH];
 
@@ -104,6 +108,10 @@ static qboolean is_game_custom(void)
 
 void MAT_Init()
 {
+	rt_classic = Cvar_Get("rt_classic", "1", CVAR_ARCHIVE);
+	rt_classic_materials = Cvar_Get("rt_classic_materials", "1", CVAR_ARCHIVE);
+	rt_original_textures = Cvar_Get("rt_original_textures", "1", CVAR_ARCHIVE);
+
 	cmdreg_t commands[2];
 	commands[0].name = "mat";
 	commands[0].function = (xcommand_t)&material_command;
@@ -868,6 +876,22 @@ pbr_material_t* MAT_Find(const char* name, imagetype_t type, imageflags_t flags)
 		uint32_t index = (uint32_t)(mat - r_materials);
 		mat->flags = (mat->flags & ~MATERIAL_INDEX_MASK) | index;
 		mat->next_frame = index;
+
+		if (rt_classic->integer && rt_original_textures->integer)
+		{
+			/* Keep semantic material information (surface kind, light flags and
+			 * radiance), but discard every replacement texture reference. */
+			qboolean synthesize_emissive = mat->synth_emissive || (mat->flags & MATERIAL_FLAG_LIGHT);
+			Q_strlcpy(mat->filename_base, name, sizeof(mat->filename_base));
+			mat->filename_normals[0] = 0;
+			mat->filename_emissive[0] = 0;
+			mat->filename_mask[0] = 0;
+			mat->image_base = NULL;
+			mat->image_normals = NULL;
+			mat->image_emissive = NULL;
+			mat->image_mask = NULL;
+			mat->synth_emissive = synthesize_emissive;
+		}
 		
 		
 		if (mat->filename_base[0]) {
@@ -947,6 +971,20 @@ pbr_material_t* MAT_Find(const char* name, imagetype_t type, imageflags_t flags)
 			mat->specular_factor = 0.f;
 			mat->metalness_factor = 0.f;
 		}
+	}
+
+	if (rt_classic->integer && rt_classic_materials->integer &&
+		MAT_IsKind(mat->flags, MATERIAL_KIND_REGULAR))
+	{
+		/* Vanilla artwork has no authored PBR channels.  Treat ordinary
+		 * surfaces as matte painted/concrete material instead of inferring
+		 * gloss or metal from the diffuse texture. */
+		mat->roughness_override = 0.9f;
+		mat->metalness_factor = 0.f;
+		mat->specular_factor = 0.05f;
+		mat->bump_scale = 0.f;
+		mat->image_normals = NULL;
+		mat->filename_normals[0] = 0;
 	}
 
 	if(mat->synth_emissive && !mat->image_emissive)

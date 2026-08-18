@@ -938,7 +938,10 @@ sample_emissive_texture(uint material_id, MaterialInfo minfo, vec2 tex_coord, ve
 
     	vec3 corrected = correct_emissive(material_id, image3.rgb);
 
-	    return corrected * minfo.emissive_factor;
+		float classic_scale = global_ubo.rt_classic != 0
+			? max(global_ubo.rt_emissive_strength, 0.0)
+			: 1.0;
+	    return corrected * minfo.emissive_factor * classic_scale;
 	}
 
 	return vec3(0);

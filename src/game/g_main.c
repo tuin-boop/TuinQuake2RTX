@@ -181,7 +181,8 @@ void InitGame(void)
 	//   0 = no flare gun
 	//   1 = spawn with the flare gun
 	//   2 = spawn with the flare gun and some grenades
-	sv_flaregun = gi.cvar("sv_flaregun", "2", 0);
+	// RT Classic preserves the original weapon roster by default.
+	sv_flaregun = gi.cvar("sv_flaregun", "0", 0);
 
     // enable protocol extensions if supported
     if (sv_features && (int)sv_features->value & GMF_PROTOCOL_EXTENSIONS && (int)g_protocol_extensions->value) {
@@ -542,4 +543,3 @@ void G_RunFrame(void)
     // build the playerstate_t structures for all players
     ClientEndServerFrames();
 }
-

@@ -1,4 +1,36 @@
-# Quake II RTX
+# TuinRTX
+
+TuinRTX is a custom recompilation of NVIDIA Quake II RTX 1.8.1. It preserves
+the crisp original Quake II artwork, models, HUD, gameplay, and atmosphere by
+default while using the Quake II RTX path tracer for dynamic sunlight, bounced
+light, shadows, reflections, and a ray-traced flashlight.
+
+The Windows build and installer are available from the
+[TuinRTX itch.io page](https://tuintje.itch.io/tuinrtx-quake-ii).
+
+This repository contains the TuinRTX engine, shader, configuration, launcher,
+and installer source changes. It does not contain the commercial Quake II PAK
+files or the large redistributable RTX media packages. You must own Quake II
+to play. See [`doc/rt-classic.md`](doc/rt-classic.md) for the Classic-mode
+rendering changes and configuration controls.
+
+## TuinRTX controls
+
+  - `/` cycles the time of day and scenery lighting
+  - `F` toggles the ray-traced flashlight
+  - `F5` opens video settings
+  - `F12` takes a screenshot
+
+## Building TuinRTX
+
+The engine uses the upstream Quake II RTX build process documented below.
+Build the engine first, then place the official Quake II RTX 1.8.1
+`q2rtx_media.pkz` and `blue_noise.pkz` files in `baseq2/` before running
+`distribution/build_installer.ps1`. Commercial `pak*.pak` files are never
+included by that script; the installed launcher locates them on the player's
+computer.
+
+## Upstream project
 
 [![Build Status](https://github.com/NVIDIA/Q2RTX/actions/workflows/build.yml/badge.svg)](https://github.com/NVIDIA/Q2RTX/actions/workflows/build.yml)
 

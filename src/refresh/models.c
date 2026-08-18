@@ -46,6 +46,7 @@ int          r_numModels;
 cvar_t    *cl_testmodel;
 cvar_t    *cl_testfps;
 cvar_t    *cl_testalpha;
+static cvar_t *rt_original_models;
 qhandle_t  cl_testmodel_handle = -1;
 vec3_t     cl_testmodel_position;
 
@@ -360,6 +361,8 @@ qhandle_t R_RegisterModel(const char *name)
 #else
         bool try_md3 = true;
 #endif
+        if (rt_original_models && rt_original_models->integer)
+            try_md3 = false;
         if (namelen > 4 && (strcmp(extension, ".md2") == 0) && try_md3)
         {
             memcpy(extension, ".md3", 4);
@@ -482,6 +485,7 @@ static void MOD_PutTest_f(void)
 void MOD_Init(void)
 {
     Q_assert(!r_numModels);
+    rt_original_models = Cvar_Get("rt_original_models", "1", CVAR_ARCHIVE);
     Cmd_AddCommand("modellist", MOD_List_f);
     Cmd_AddCommand("puttest", MOD_PutTest_f);
 
@@ -501,4 +505,3 @@ void MOD_Shutdown(void)
     Cmd_RemoveCommand("modellist");
     Cmd_RemoveCommand("puttest");
 }
-

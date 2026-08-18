@@ -202,6 +202,14 @@ static void viewsize_changed(cvar_t *self)
 
 static void pt_nearest_changed(cvar_t* self)
 {
+	/* RT Classic preserves the original pixel-art presentation. Keep world
+	 * textures on true nearest-neighbor filtering while the preset is active. */
+	if (self == cvar_pt_nearest && cvar_rt_classic &&
+		cvar_rt_classic->integer && self->integer != 2)
+	{
+		Cvar_SetInteger(self, 2, FROM_CODE);
+		return;
+	}
 	vkpt_invalidate_texture_descriptors();
 }
 
@@ -2619,6 +2627,8 @@ evaluate_reference_mode(reference_mode_t* ref_mode)
 	}
 
 	ref_mode->reflect_refract = min(10, ref_mode->reflect_refract);
+	if (cvar_rt_classic->integer && !cvar_rt_reflections->integer)
+		ref_mode->reflect_refract = 0;
 }
 
 static void
@@ -3883,6 +3893,9 @@ R_Init_RTX(bool total)
 #define UBO_CVAR_DO(name, default_value) cvar_##name = Cvar_Get(#name, #default_value, 0);
 	UBO_CVAR_LIST
 #undef UBO_CVAR_LIST
+
+	if (cvar_rt_classic->integer && cvar_pt_nearest->integer != 2)
+		Cvar_SetInteger(cvar_pt_nearest, 2, FROM_CODE);
 
 	cvar_flt_temporal_hf->changed = temporal_cvar_changed;
 	cvar_flt_temporal_lf->changed = temporal_cvar_changed;

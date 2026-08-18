@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>TuinRTX Launcher</AssemblyName>
+    <RootNamespace>TuinRTX.Launcher</RootNamespace>
+    <ApplicationIcon>TuinRTX.ico</ApplicationIcon>
+    <Version>1.0.5</Version>
+    <Product>TuinRTX Launcher</Product>
+    <Company>TuinRTX Project</Company>
+  </PropertyGroup>
+</Project>

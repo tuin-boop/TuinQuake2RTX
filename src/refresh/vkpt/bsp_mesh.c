@@ -34,6 +34,8 @@ extern cvar_t *cvar_pt_enable_surface_lights;
 extern cvar_t *cvar_pt_enable_surface_lights_warp;
 extern cvar_t* cvar_pt_bsp_radiance_scale;
 extern cvar_t *cvar_pt_bsp_sky_lights;
+extern cvar_t *cvar_rt_classic;
+extern cvar_t *cvar_rt_emissive_strength;
 
 static void
 remove_collinear_edges(float* positions, float* tex_coords, mbasis_t* bases, int* num_vertices)
@@ -135,9 +137,14 @@ compute_emissive(mtexinfo_t *texinfo)
 
 	const float bsp_emissive = (float)texinfo->radiance * cvar_pt_bsp_radiance_scale->value;
 
-	return ((texinfo->c.flags & SURF_LIGHT) && texinfo->material->bsp_radiance)
+	float emissive = ((texinfo->c.flags & SURF_LIGHT) && texinfo->material->bsp_radiance)
 		? bsp_emissive
 		: texinfo->material->default_radiance;
+
+	if (cvar_rt_classic->integer)
+		emissive *= max(0.f, cvar_rt_emissive_strength->value);
+
+	return emissive;
 }
 
 #define DUMP_WORLD_MESH_TO_OBJ 0

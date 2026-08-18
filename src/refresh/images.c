@@ -891,6 +891,7 @@ static int              img_total;
 static cvar_t   *r_override_textures;
 static cvar_t   *r_texture_formats;
 static cvar_t   *r_texture_overrides;
+static cvar_t   *rt_original_textures;
 
 static const cmd_option_t o_imagelist[] = {
     { "f", "fonts", "list fonts" },
@@ -1457,6 +1458,11 @@ static image_t *find_or_load_image(const char *name, size_t len,
     bool allow_override = true;
 #endif
 
+    // RT Classic keeps the artwork supplied by the active game.  In
+    // particular, do not redirect a vanilla WAL/PCX skin to overrides/.
+    if (rt_original_textures && rt_original_textures->integer)
+        allow_override = false;
+
     if(allow_override)
     {
         const char *last_slash = strrchr(name, '/');
@@ -1872,6 +1878,7 @@ void IMG_Init(void)
     r_texture_formats->changed = r_texture_formats_changed;
     r_texture_formats_changed(r_texture_formats);
     r_texture_overrides = Cvar_Get("r_texture_overrides", "-1", CVAR_FILES);
+    rt_original_textures = Cvar_Get("rt_original_textures", "1", CVAR_ARCHIVE);
 
     r_screenshot_format = Cvar_Get("gl_screenshot_format", "png", CVAR_ARCHIVE);
     r_screenshot_async = Cvar_Get("gl_screenshot_async", "1", 0);

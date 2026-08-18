@@ -56,6 +56,7 @@ cvar_t *physical_sky;
 cvar_t *physical_sky_draw_clouds;
 cvar_t *physical_sky_space;
 cvar_t *physical_sky_brightness;
+extern cvar_t *cvar_rt_classic;
 
 cvar_t *sky_scattering;
 cvar_t *sky_transmittance;
@@ -620,15 +621,18 @@ void
 vkpt_evaluate_sun_light(sun_light_t* light, const vec3_t sky_matrix[3], float time)
 {
 	static uint16_t skyIndex = -1;
+	bool classic_static_sun = physical_sky->integer == 0 &&
+		cvar_rt_classic && cvar_rt_classic->integer;
 	if (physical_sky->integer != skyIndex)
 	{   // update cvars with presets if the user changed the sky
-		UpdatePhysicalSkyCVars();
+		if (!classic_static_sun)
+			UpdatePhysicalSkyCVars();
 		skyIndex = physical_sky->integer;
 	}
 
 	PhysicalSkyDesc_t const * skyDesc = GetSkyPreset(skyIndex);
 
-	if ((skyDesc->flags & PHYSICAL_SKY_FLAG_USE_SKYBOX) != 0)
+	if ((skyDesc->flags & PHYSICAL_SKY_FLAG_USE_SKYBOX) != 0 && !classic_static_sun)
 	{
 		// physical sky is disabled - no direct sun light in this mode
 		memset(light, 0, sizeof(*light));
@@ -637,8 +641,11 @@ vkpt_evaluate_sun_light(sun_light_t* light, const vec3_t sky_matrix[3], float ti
 
 	if (skyIndex != current_preset)
 	{
-		vkQueueWaitIdle(qvk.queue_graphics);
-		SkyLoadScatterParameters(skyDesc->preset);
+		if (!classic_static_sun)
+		{
+			vkQueueWaitIdle(qvk.queue_graphics);
+			SkyLoadScatterParameters(skyDesc->preset);
+		}
 		current_preset = skyIndex;
 	}
 
@@ -751,7 +758,10 @@ vkpt_evaluate_sun_light(sun_light_t* light, const vec3_t sky_matrix[3], float ti
 
 	light->angular_size_rad = max(1.f, min(10.f, sun_angle->value)) * M_PI / 180.f;
 
-	light->use_physical_sky = true;
+	/* RT Classic can move a ray-traced sun over the original static skybox.
+	 * This changes illumination without requiring or displaying Q2RTX's
+	 * replacement atmosphere textures. */
+	light->use_physical_sky = !classic_static_sun;
 
 	// color before occlusion
 	vec3_t sunColor = { sun_color[0]->value, sun_color[1]->value, sun_color[2]->value };

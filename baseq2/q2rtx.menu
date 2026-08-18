@@ -449,7 +449,6 @@ end
 begin main
     //title "Main Menu"
     plaque m_main_plaque m_main_logo
-    footer m_main_footer 0.5
     bitmap m_main_game pushmenu singleplayer
     bitmap m_main_multiplayer pushmenu multiplayer
     bitmap m_main_options pushmenu options
@@ -461,7 +460,6 @@ begin game
     background #212F3CD0
     style --compact
     plaque m_main_plaque m_main_logo
-    footer m_main_footer 0.5
     bitmap m_main_game pushmenu singleplayer
     bitmap m_main_multiplayer pushmenu multiplayer
     bitmap m_main_options pushmenu options
@@ -585,8 +583,6 @@ begin weapons
     bind "hyperblaster" "use HyperBlaster"
     bind "railgun" "use Railgun"
     bind "bfg10k" "use BFG10K"
-    bind "flare gun" "use Flare Gun"
-    bind "switch to flare gun" "weapflare"
     bind "grenades" "use Grenades"
     blank
     bind "quad damage" "use quad damage"

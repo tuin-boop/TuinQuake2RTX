@@ -104,6 +104,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 	UBO_CVAR_DO(pt_toksvig, 1) /* intensity of Toksvig roughness correction, [0..inf) */ \
 	UBO_CVAR_DO(pt_thick_glass, 0) /* switch for thick glass refraction: 0 (disabled), 1 (reference mode only), 2 (real-time mode) */ \
 	UBO_CVAR_DO(pt_water_density, 0.5) /* scale for light extinction in water and other media, [0..inf) */ \
+	UBO_CVAR_DO(rt_classic, 1) /* preserve vanilla art and use the RT Classic tuning controls */ \
+	UBO_CVAR_DO(rt_bounce_strength, 0.5) /* RT Classic indirect-light contribution, [0..inf) */ \
+	UBO_CVAR_DO(rt_emissive_strength, 1.0) /* RT Classic emissive contribution, [0..inf) */ \
+	UBO_CVAR_DO(rt_reflections, 1) /* enable RT Classic reflection/refraction rays, 0 or 1 */ \
+	UBO_CVAR_DO(rt_reflection_strength, 0.25) /* RT Classic indirect specular response, [0..inf) */ \
 	UBO_CVAR_DO(tm_debug, 0) /* switch to show the histogram (1) or tonemapping curve (2) */ \
 	UBO_CVAR_DO(tm_dyn_range_stops, 7.0) /* Effective display dynamic range in linear stops = log2((max+refl)/(darkest+refl)) (eqn. 6), (-inf..0) */ \
 	UBO_CVAR_DO(tm_enable, 1) /* switch for tone mapping, 0 or 1 */ \

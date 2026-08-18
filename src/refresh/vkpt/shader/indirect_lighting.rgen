@@ -483,6 +483,13 @@ main()
 
 	indirect_lighting(ipos, half_res, bounce_direction, bounce_contrib, is_specular_ray);
 
+	if(global_ubo.rt_classic != 0)
+	{
+		bounce_contrib *= max(global_ubo.rt_bounce_strength, 0.0);
+		if(is_specular_ray)
+			bounce_contrib *= max(global_ubo.rt_reflection_strength, 0.0);
+	}
+
 	if(any(isinf(bounce_contrib)) || any(isnan(bounce_contrib)) || any(isinf(bounce_direction)) || any(isnan(bounce_direction)) )
 		return;
 

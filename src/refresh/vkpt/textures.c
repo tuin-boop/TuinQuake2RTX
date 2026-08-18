@@ -341,6 +341,7 @@ load_blue_noise(void)
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
 	uint16_t *bn_tex = (uint16_t *) buffer_map(&buf_img_upload);
+	bool use_procedural_fallback = false;
 
 	for(int i = 0; i < num_images; i++) {
 		int w, h, n;
@@ -358,10 +359,9 @@ load_blue_noise(void)
 		}
 
 		if(!data) {
-			Com_EPrintf("error loading blue noise tex %s\n", buf);
-			buffer_unmap(&buf_img_upload);
-			buffer_destroy(&buf_img_upload);
-			return VK_ERROR_INITIALIZATION_FAILED;
+			Com_WPrintf("Couldn't load %s; using deterministic procedural sampling noise.\n", buf);
+			use_procedural_fallback = true;
+			break;
 		}
 
 		/* loaded images are RGBA, want to upload as texture array though */
@@ -371,6 +371,24 @@ load_blue_noise(void)
 		}
 
 		stbi_image_free(data);
+	}
+
+	if(use_procedural_fallback) {
+		/* Keep source builds runnable without redistributing Q2RTX's runtime
+		 * media.  The integer avalanche produces stable, decorrelated samples
+		 * for every pixel and temporal layer.  An installed blue_noise.pkz is
+		 * still preferred because its spectrum converges more gracefully. */
+		for(uint32_t layer = 0; layer < NUM_BLUE_NOISE_TEX; layer++) {
+			for(uint32_t pixel = 0; pixel < (uint32_t)img_size; pixel++) {
+				uint32_t value = pixel ^ (layer * 0x9e3779b9u);
+				value ^= value >> 16;
+				value *= 0x7feb352du;
+				value ^= value >> 15;
+				value *= 0x846ca68bu;
+				value ^= value >> 16;
+				bn_tex[layer * img_size + pixel] = (uint16_t)value;
+			}
+		}
 	}
 	buffer_unmap(&buf_img_upload);
 	bn_tex = NULL;

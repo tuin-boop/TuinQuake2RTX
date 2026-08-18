@@ -47,3 +47,15 @@ baseq2/**/*.txt
 !baseq2/*.txt
 !baseq2/maps/sky/*.txt
 !baseq2/pics/flashlight_profile.png
+
+# TuinRTX local build and release output
+artifacts/
+distribution/build/
+**/bin/
+**/obj/
+
+# Artwork required by the TuinRTX launcher and installer
+!distribution/art/
+!distribution/art/*.jpg
+!distribution/TuinRTX.Installer/art/
+!distribution/TuinRTX.Installer/art/*.jpg
