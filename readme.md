@@ -1,5 +1,9 @@
 # TuinRTX
 
+[Download the latest installer](https://github.com/tuin-boop/TuinQuake2RTX/releases/latest) | [New launcher, optional models and Chicken setup](Packaging/TuinEdition/README.md)
+
+Version 1.1.0 adds the Tuin Edition launcher and loading screen. Remastered models are optional and recommended; experimental DLSS 5 is optional and off by default.
+
 ![TuinRTX path-traced classic Quake II interior](doc/tuinrtx-hero.png)
 
 TuinRTX is a custom recompilation of NVIDIA Quake II RTX 1.8.1. It preserves

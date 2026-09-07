@@ -60,3 +60,6 @@ distribution/build/
 !distribution/TuinRTX.Installer/art/
 !distribution/TuinRTX.Installer/art/*.jpg
 !doc/tuinrtx-hero.png
+
+# Tuin Edition release artwork
+!Packaging/TuinEdition/assets/*.png
